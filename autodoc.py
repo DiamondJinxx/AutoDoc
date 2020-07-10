@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QApplication, QLabel, QMessageBox, QVBoxLayout,QHBoxLayout, QWidget, QFileSystemModel, QLineEdit, QTreeView
-from PyQt5 import QtCore
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 from pathFinder import pathFinder
-from pathFinder import Comunicate
 
 class Autodoc(QWidget):
 
@@ -22,7 +22,71 @@ class Autodoc(QWidget):
 
     def initUI(self):
         self.setGeometry(500, 500, 500, 500)
-        self.setWindowTitle('Переменное название')
+        self.setWindowTitle('НеБольшаяУтилитка')
+        #компановщики
+        self.__vlay = QVBoxLayout(self)
+        self.__vInLay = QVBoxLayout() # вертикальный для ввода
+        self.__vOutLay = QVBoxLayout() # вертикальный для вывода
+        self.__inHlay = QHBoxLayout() # горизонтальный для позиций входного файла
+        self.__outHlay = QHBoxLayout() # горизонтальный длля позиций результирующего файла
+        # управляющие элементы
+        self.__out    = QLabel("Укажите папку, в которую поместить документ")
+        self.__source = QLabel("Укажите файл формата .csv")
+        self.__btnOutPath    = QPushButton("Выбрать папку")
+        self.__btnSourcePath = QPushButton("Выбрать файл")
+        self.__btnConv       = QPushButton("Создать документ")
+        self.__outPath       = QLineEdit()
+        self.__sourcePath    = QLineEdit()
+        # установка отступов
+
+
+       # print(self.__vlay.spacing())
+        #self.__vInLay.addStretch()
+#        self.__vOutLay.addStretch()
+        # компановка 
+        self.__vInLay.addWidget(self.__source)
+        self.__inHlay.addWidget(self.__sourcePath)
+        self.__inHlay.addWidget(self.__btnSourcePath)
+        self.__vInLay.addLayout(self.__inHlay)
+        
+        self.__vOutLay.addWidget(self.__out)
+        self.__outHlay.addWidget(self.__outPath)
+        self.__outHlay.addWidget(self.__btnOutPath)
+        self.__vOutLay.addLayout(self.__outHlay)
+        
+        self.__vlay.addLayout(self.__vInLay)
+        self.__vlay.addLayout(self.__vOutLay)
+        self.__vlay.addWidget(self.__btnConv)
+
+
+    def on_btnSourcePathClick(self):
+        filters = ("*.csv","*.txt","*.xls")
+        self.dlg = pathFinder(filters)
+        self.dlg.exec_()
+        self.fileIn = self.dlg.getFilePath()
+        self.lbl.setText(self.fileIn)
+
+    def on_btnOutPathCLick(self):
+        pass
+
+    def on_btnConvClick(self):
+        pass
+    '''
+        self.__widgets = QGridLayout(self)
+        self.__out    = QLabel("Укажите папку, в которую поместить документ")
+        self.__source = QLabel("Укажите файл формата .csv")
+        self.__outPath       = QLineEdit()
+        self.__sourcePath    = QLineEdit()
+        self.__btnOutPath    = QPushButton("Выбрать файл")
+        self.__btnSourcePath = QPushButton("Выбрать папку")
+        self.__widgets.addWidget(self.__out, 0, 0)
+        self.__widgets.addWidget(self.__outPath, 0, 1)
+        self.__widgets.addWidget(self.__btnOutPath, 0, 2)
+        self.__widgets.addWidget(self.__source, 1, 0)
+        self.__widgets.addWidget(self.__sourcePath, 1, 1)
+        self.__widgets.addWidget(self.__btnSourcePath, 1, 2)
+'''
+'''
         self.lay = QHBoxLayout(self)
         layl = QVBoxLayout()
         layr = QVBoxLayout()
@@ -49,8 +113,7 @@ class Autodoc(QWidget):
         self.lay.addLayout(layl)
         self.lay.addLayout(layr)
         treeWidget.resize(300,300)
-        self.c = Comunicate()
-        self.c.filePathChanged.connect(self.recieveFilePath)
+#        self.c = Comunicate()
 #        self.setLayout(lay) - можно и не указывать,
 # так как при указании self в конструкторе компановщика он сам присоединится
 #
@@ -58,11 +121,6 @@ class Autodoc(QWidget):
  #       self.qbtn.move(50, 50)
         self.qbtn.clicked.connect(self.click_method)
         self.qbtn1.clicked.connect(self.click_method1)
-
-    @QtCore.pyqtSlot(str)
-    def recieveFilePath(filePath):
-        print("Сигнал получен")
-        self.lbl.setText(filePath)
     
     def click_method(self):
         if(len(self.sourcePath.text()) != 0):
@@ -74,13 +132,17 @@ class Autodoc(QWidget):
     def click_method1(self):
         filters = ("*.csv","*.txt","*.xls")
         self.dlg = pathFinder(filters)
-        self.dlg.show()
+        self.dlg.exec_()
+        self.fileIn = self.dlg.getFilePath()
+        self.lbl.setText(self.fileIn)
+
         #такой вариант кажись расценивается как мусор и отправляется на помойку
         # по этой причине ничего не отображается, нужно задать как поле объекта класса
 #        dlg = pathFinder(filters)
 #       dlg.show()
 #        print("I'm clicked")
 
+'''
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Autodoc()
