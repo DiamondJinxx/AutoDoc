@@ -3,11 +3,12 @@
 
 import sys
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QApplication, QLabel, QMessageBox, QVBoxLayout,QHBoxLayout, QWidget, QFileSystemModel, QLineEdit, QTreeView
-from PyQt5.QtCore import QCoreApplication
-
+from PyQt5 import QtCore
+from pathFinder import pathFinder
+from pathFinder import Comunicate
 
 class Autodoc(QWidget):
-    
+
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -48,7 +49,8 @@ class Autodoc(QWidget):
         self.lay.addLayout(layl)
         self.lay.addLayout(layr)
         treeWidget.resize(300,300)
-
+        self.c = Comunicate()
+        self.c.filePathChanged.connect(self.recieveFilePath)
 #        self.setLayout(lay) - можно и не указывать,
 # так как при указании self в конструкторе компановщика он сам присоединится
 #
@@ -57,7 +59,11 @@ class Autodoc(QWidget):
         self.qbtn.clicked.connect(self.click_method)
         self.qbtn1.clicked.connect(self.click_method1)
 
-
+    @QtCore.pyqtSlot(str)
+    def recieveFilePath(filePath):
+        print("Сигнал получен")
+        self.lbl.setText(filePath)
+    
     def click_method(self):
         if(len(self.sourcePath.text()) != 0):
             self.lbl.setText(self.sourcePath.text())
@@ -66,7 +72,13 @@ class Autodoc(QWidget):
             self.lbl.setText("Type a text in text editor")
 
     def click_method1(self):
-        self.setWindowTitle(self.titleText.text())
+        filters = ("*.csv","*.txt","*.xls")
+        self.dlg = pathFinder(filters)
+        self.dlg.show()
+        #такой вариант кажись расценивается как мусор и отправляется на помойку
+        # по этой причине ничего не отображается, нужно задать как поле объекта класса
+#        dlg = pathFinder(filters)
+#       dlg.show()
 #        print("I'm clicked")
 
 if __name__ == '__main__':
