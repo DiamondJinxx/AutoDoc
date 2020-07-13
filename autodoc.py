@@ -58,16 +58,25 @@ class Autodoc(QWidget):
         self.__vlay.addLayout(self.__vOutLay)
         self.__vlay.addWidget(self.__btnConv)
 
+        #коннекты
+        self.__btnSourcePath.clicked.connect(self.on_btnSourcePathClick)
+        self.__btnOutPath.clicked.connect(self.on_btnOutPathClick)
+
+
 
     def on_btnSourcePathClick(self):
         filters = ("*.csv","*.txt","*.xls")
-        self.dlg = pathFinder(filters)
+        self.dlg = pathFinder(filters,True)
         self.dlg.exec_()
-        self.fileIn = self.dlg.getFilePath()
-        self.lbl.setText(self.fileIn)
+        self.fileIn = self.dlg.getPath()
+        self.__sourcePath.setText(self.fileIn)
 
-    def on_btnOutPathCLick(self):
-        pass
+    def on_btnOutPathClick(self):
+        filters = ("*.csv","*.txt","*.xls")
+        self.dlg = pathFinder(filters,False)
+        self.dlg.exec_()
+        self.fileOut = self.dlg.getPath()
+        self.__outPath.setText(self.fileOut)
 
     def on_btnConvClick(self):
         pass
