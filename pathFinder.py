@@ -14,7 +14,7 @@ class pathFinder(QDialog):
     '''        
     def __init__(self, fileFilers:list, csvFile:bool): # укажем параметр фильтра файлов
         super().__init__()
-        self.__csvFile = csvFile
+        self.__csvFile = csvFile                               # используем форму лдя выбора пути к файлу?
         if fileFilers is None: fileFilers = ("*.csv","*.json") # неболшое предохранения
         self.__dirsTree = QTreeView()
         self.__mainLayout = QVBoxLayout(self);
@@ -24,6 +24,7 @@ class pathFinder(QDialog):
         # Утстанавливаем нужный каталог
         self.__path = "/"
         self.__currentFilePath = ""
+        self.__currentDirPath = "/"
 
         #модель файловой системы
         self.__dirsModel = QFileSystemModel()
@@ -81,7 +82,7 @@ class pathFinder(QDialog):
     def on_clickOnDir(self, index):
         self.__currentDirPath = self.__dirsModel.fileInfo(index).absoluteFilePath()
         if self.__csvFile is True:
-            self.__filesTable.setRootIndex(self.__fileModel.setRootPath(path))
+            self.__filesTable.setRootIndex(self.__fileModel.setRootPath(self.__currentDirPath))
         print(self.__currentDirPath)
     
     def on_selectionChanged(self, selectionIntems):
@@ -99,7 +100,8 @@ class pathFinder(QDialog):
             if(len(self.__currentDirPath) <= 1):
                 QMessageBox.information(self,"Ошибка","Вы забыли выбрать!",QMessageBox.Ok, QMessageBox.Ok)
             elif(self.__currentFilePath.find(self.__fileMask) == -1): # если файл с другим расширением
-                QMessageBox.information(self,"Ошибка","Выбранный вами файл не имеет расширения "+ self.__fileMask,QMessageBox.Ok, QMessageBox.Ok)     
+                QMessageBox.information(self,"Ошибка","Выбранный вами файл не имеет расширения "+ self.__fileMask,QMessageBox.Ok, QMessageBox.Ok) 
+#                self.__currentFilePath=""
             else:
                 self.close()
         else:

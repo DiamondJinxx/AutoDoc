@@ -75,9 +75,9 @@ class Autodoc(QWidget):
     def on_btnOutPathClick(self):
         filters = ("*.csv","*.txt","*.xls")
         self.dlg = pathFinder(filters,False)
-        self.dlg.exec_()
-        self.fileOut = self.dlg.getPath()
-        self.__outPath.setText(self.fileOut)
+        if(self.dlg.exec_() == QDialog.Accepted ):
+            self.fileOut = self.dlg.getPath()
+            self.__outPath.setText(self.fileOut)
 
     def on_btnConvClick(self):
         pass
