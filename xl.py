@@ -10,15 +10,11 @@ workbook = opx.load_workbook(workbook_path)
 
 bold_border = Border(left=Side(style='thin'),
                      right = Side(style='hair'),
-                     top=Side(style='medium'),
-                     bottom=Side(style='thick'))
+                     top=Side(style='medium')                     bottom=Side(style='thick'))
 
 ws = workbook.worksheets[0]
 ws.cell(row=2,column=2).border = bold_border
 ws.merge_cells('A2:D2')
-
-
-
 
 
 #close file with save
