@@ -25,6 +25,10 @@ hmm15 = hmm10 * 1.5
 hmm25 = hmm10 * 2.5
 hmm8 = hmm10 * 0.8
 
+begin_row = 2
+end_row = 40
+begin_column = 2
+end_column = 21
 central_table_begin = 3
 central_table_End = 31
 last_row = 40
@@ -60,10 +64,15 @@ def setCellHieght(worksheet):
         else:
             worksheet.row_dimensions[row].height = hmm5
 
+#set GOST Type A font in cells int rectangle
+def setGostFont(worksheet):
+    for row in range(2,end_row):
+        for column in range(2,end_column+1):
+            worksheet.cell(row,column).font = "GOST Type A"
 
 #need set this field for top and bot cell,
 # don't know why not work with top cell like in write in documentations
-def left_cells_of_frame(worksheet,column,begin, height):
+def left_cells_of_frame(worksheet,column,begin, height,text):
     print(column + begin)
     lst = int(begin) + height
     print(column + str(lst))
@@ -72,7 +81,9 @@ def left_cells_of_frame(worksheet,column,begin, height):
     bot_left_cell = worksheet[column + str(lst)]
     top_left_cell.border = out_border
     bot_left_cell.border = out_border
-    top_left_cell.alignment =Alignment(text_rotation=90)
+    top_left_cell.alignment =Alignment(vertical="center",text_rotation=90) # rotation text to 90 angles
+    top_left_cell.font = "GOST Type A"
+    top_left_cell.value = text
 
 
 workbook_path = "test.xlsx"
@@ -89,14 +100,16 @@ worksheet.merge_cells('B2:B8')
 #set form
 setCellWidth(worksheet)
 setCellHieght(worksheet)
-
+setGostFont(worksheet)
 #mergens
 #left cells of page
 bc_column_height = {'2':6, '9':7, '20':3, '24':2,'27':2,'30':4,'35':4} # № of beginin row
+bc_column_text = {'2':"Перв.примен.", '9':"Справ. №", '20':"Подп. и дата", '24':"Инв. № дубл."
+                    ,'27':"Взам. Инв. №",'30':"Подп. и дата",'35':"Инв. № подл."} # № of beginin row
 #and needing hieght of result cell
-for column in bc_column_height:
-    left_cells_of_frame(worksheet,'B', column, bc_column_height[column])
-    left_cells_of_frame(worksheet,'C', column, bc_column_height[column])
+for row in bc_column_height:
+    left_cells_of_frame(worksheet,'B', row, bc_column_height[row],bc_column_text[row])
+    left_cells_of_frame(worksheet,'C', row, bc_column_height[row],"")
 
 
 #close file with save
