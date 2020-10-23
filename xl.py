@@ -4,9 +4,10 @@ import openpyxl as opx
 from openpyxl.styles.borders import Border, Side
 from openpyxl.styles.alignment import Alignment
 
-#TODO: need font-style type A
-#TODO: draw central widgets
+#TODO: draw central cells
 #TODO: try to print sheet on printer
+
+#
 
 #defined mm var for width of line
 wmm5 = 2.016
@@ -32,7 +33,7 @@ end_row = 40
 begin_column = 2
 end_column = 21
 central_table_begin = 3
-central_table_End = 31
+central_table_end = 31
 last_row = 40
 
 cellWidth = {'B':wmm5,'C':wmm7,'D':wmm7,'E':wmm5,'F':wmm5,'G':wmm3,'H':wmm20,'I':wmm15,'J':wmm10,'K':wmm10 * 2.7,
@@ -97,7 +98,8 @@ def draw_left_stamp(worksheet):
         left_cells_of_frame(worksheet, 'B', row, bc_column_height[row], bc_column_text[row])
         left_cells_of_frame(worksheet, 'C', row, bc_column_height[row], "")
 
-def draw_header(worksheet ):
+#header is merges from D to U
+def draw_header(worksheet):
     #begin:last column to merge
     active_row = 2
     cells = {'D':'G','H':'L','M':'N','O':'U'}
@@ -119,9 +121,18 @@ def draw_header(worksheet ):
 
 
 
-def draw_central_cell(worksheet, column, begin, end):
-    print(column + begin)
-
+def draw_central_cell(worksheet):
+    cells = {'D':'G','H':'L','M':'N','O':'U'}
+    for row in range(central_table_begin, central_table_end):
+        for cell in cells:
+            begin_cell = cell + str(row)
+            last_cell = cells[cell] + str(row)
+            worksheet.merge_cells(begin_cell + ':' + last_cell)
+            top_left_cell = worksheet[begin_cell]
+            bot_left_cell = worksheet[last_cell]
+            top_left_cell.border = in_border
+            bot_left_cell.border = in_border
+            top_left_cell.alignment = Alignment(vertical="center", horizontal="center")  # text alignment
 
 workbook_path = "test.xlsx"
 workbook = opx.load_workbook(workbook_path)
@@ -142,6 +153,7 @@ setGostFont(worksheet)
 #left cells of page
 
 draw_left_stamp(worksheet)
+draw_central_cell(worksheet)
 draw_header(worksheet)
 #close file with save
 workbook.save(workbook_path)
