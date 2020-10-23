@@ -4,7 +4,9 @@ import openpyxl as opx
 from openpyxl.styles.borders import Border, Side
 from openpyxl.styles.alignment import Alignment
 
-#need font-style type A
+#TODO: need font-style type A
+#TODO: draw central widgets
+#TODO: try to print sheet on printer
 
 #defined mm var for width of line
 wmm5 = 2.016
@@ -85,6 +87,9 @@ def left_cells_of_frame(worksheet,column,begin, height,text):
     top_left_cell.font = "GOST Type A"
     top_left_cell.value = text
 
+
+def draw_central_cell():
+    pass
 
 workbook_path = "test.xlsx"
 workbook = opx.load_workbook(workbook_path)
