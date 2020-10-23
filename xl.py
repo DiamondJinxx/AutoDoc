@@ -70,7 +70,7 @@ def setCellHieght(worksheet):
 def setGostFont(worksheet):
     for row in range(2,end_row):
         for column in range(2,end_column+1):
-            worksheet.cell(row,column).font = "GOST Type A"
+            worksheet.cell(row,column).font = "GOST Type AU"
 
 
 def left_cells_of_frame(worksheet,column,begin, height,text):
@@ -85,11 +85,10 @@ def left_cells_of_frame(worksheet,column,begin, height,text):
     top_left_cell.border = out_border
     bot_left_cell.border = out_border
     top_left_cell.alignment =Alignment(vertical="center",text_rotation=90) # rotation text to 90 angles
-    top_left_cell.font = "GOST Type A"
     top_left_cell.value = text
 
 #draw left stamp cells
-def draw_left_stamp():
+def draw_left_stamp(worksheet):
     bc_column_height = {'2': 6, '9': 7, '20': 3, '24': 2, '27': 2, '30': 4, '35': 4}  # № of beginin row
     bc_column_text = {'2': "Перв.примен.", '9': "Справ. №", '20': "Подп. и дата", '24': "Инв. № дубл."
         , '27': "Взам. Инв. №", '30': "Подп. и дата", '35': "Инв. № подл."}  # № of beginin row
@@ -98,8 +97,31 @@ def draw_left_stamp():
         left_cells_of_frame(worksheet, 'B', row, bc_column_height[row], bc_column_text[row])
         left_cells_of_frame(worksheet, 'C', row, bc_column_height[row], "")
 
+def draw_header(worksheet ):
+    #begin:last column to merge
+    active_row = 2
+    cells = {'D':'G','H':'L','M':'N','O':'U'}
+    text = {'D':'Поз.\nОбознач.','H':'Наименование','M':'Кол.','O':'Примечание'}
+    for cell in cells:
+        begin_cell = cell + str(active_row)
+        last_cell = cells[cell] + str(active_row)
+        worksheet.merge_cells(begin_cell + ':' + last_cell)
+        top_left_cell = worksheet[begin_cell]
+        bot_left_cell = worksheet[last_cell]
+        top_left_cell.border = out_border
+        bot_left_cell.border = out_border
+        top_left_cell.value = text[cell]
+        if cell == 'M':
+            top_left_cell.alignment = Alignment(vertical="center", horizontal="center", text_rotation=90)  # rotation text to 90 angles and text alignment
+        else:
+            top_left_cell.alignment = Alignment(vertical="center",horizontal="center")  # text alignment
+
+
+
+
 def draw_central_cell(worksheet, column, begin, end):
-    print
+    print(column + begin)
+
 
 workbook_path = "test.xlsx"
 workbook = opx.load_workbook(workbook_path)
@@ -119,7 +141,7 @@ setGostFont(worksheet)
 #mergens
 #left cells of page
 
-draw_left_stamp()
-
+draw_left_stamp(worksheet)
+draw_header(worksheet)
 #close file with save
 workbook.save(workbook_path)
